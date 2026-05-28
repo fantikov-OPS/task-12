@@ -1,74 +1,3 @@
-class Dog:
-    def __init__(self, name, age, height, weight, master, address='Minsk'):
-        self.__name = name
-        self.__age = age
-        self.__height = height
-        self.__weight = weight
-        self.__master = master
-        self.__address = address
-
-    @property
-    def master(self):
-        return self.__master
-
-    @master.setter
-    def master(self, new_master):
-        self.__master =new_master
-
-    @property
-    def address(self):
-        return self.__address
-
-    @address.setter
-    def address(self, new_address):
-        self.__address = new_address
-
-    @property
-    def height(self):
-        return self.__height
-
-    @height.setter
-    def height(self, new_height):
-        self.__height = new_height
-
-    @property
-    def weight(self):
-        return self.__weight
-
-    @weight.setter
-    def weight(self, new_weight):
-        self.__weight = new_weight
-
-    @property
-    def age(self):
-        return self.__age
-
-    @age.setter
-    def age(self, new_age):
-        self.__age = new_age
-
-    @property
-    def name(self):
-        return self.__name
-
-    @name.setter
-    def name(self, new_name):
-        self.__name = new_name
-
-    def bark(self):
-        print('bark bark')
-
-    def run(self):
-        print('Run!')
-
-    def jump(self):
-        print ('Jump!')
-
-
-dog = Dog('Bob', 10, 15, 25, 'Alice', 'Grodno')
-
-dog.address = 'Minsk'
-
 class Pet:
 
     def __init__(self, name, age, master, height, weight):
@@ -87,26 +16,41 @@ class Pet:
     def run(self):
         print('run!')
 
-    def jump(self):
-        print ('Jump!')
+    def jump(self, metesr, pet = None):
+        print (f'Pets Jump {metesr}' if not pet else f'{pet} Jump {metesr}')
 
     def birthday(self):
         self.age+=1
 
+    def voise(self):
+        pass
+
 
 class Dog(Pet):
 
-    def bark(self):
+    def voise(self):
         print('bark bark')
 
-        
+    def jump(self, metesr, pet = 'Dog'):
+        print(f'Dogs cannot jump so high' if metesr > 0.5 else super().jump(metesr, pet))
+
+
 class Cat(Pet):
 
-    def meow(self):
+    def voise(self):
         print('meov')
+
+    def jump(self, metesr, pet="cat"):
+        print(f'Cats cannot jump so high' if metesr > 2 else super().jump(metesr, pet))
 
 
 class Parrot(Pet):
+    def __init__(self, name, age, master, height, weight, species):
+        super().__init__(name, age, master, height, weight)
+        self.species = species
+
+    def voise(self):
+        print('chirk-chirik')
 
     def set_name(self, new_name=None):
         if new_name and len(new_name)>0:
@@ -118,13 +62,76 @@ class Parrot(Pet):
         print('This parrot cannot fly.') if self.weight > 0.1 else print ('Fly')
 
 
-    def jump(self):
-        return print('Parrot dont jump')
+    def jump(self, metesr, pet='parrot'):
+        if metesr > 0.05:
+            print('Parrot cannot jump so high')
+        else:
+            super().jump(metesr, pet)
 
+        #print(f'Parrot cannot jump so high' if metesr > 0.05 else super().jump(metesr, pet))
 
+    def change_weight(self, new_weight=None):
+        self.weight = new_weight if new_weight else self.weight + 0.5
 
-parrot = Parrot('Gosha', 5, 'Petya', 3, 0.05)
-dog  = Dog('Myxtar', 3, 'Tola',30, 45 )
+    def cnage_height(self, new_height=None):
+        self.height = new_height if new_height else self.height + 0.5
 
-parrot.jump()
-dog.jump()
+class MyTime():
+    
+    def __init__(self, hours, minutes, seconds):
+        self.hours = hours
+        self.minutes = minutes
+        self.seconds = seconds
+
+    def __eq__(self, other):
+        if self.hours == other.hours and self.minutes == other.minutes and self.seconds == other.seconds:
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        if self.hours == other.hours and self.minutes == other.minutes and self.seconds == other.seconds:
+            return False
+        else:
+            return True
+
+    def __add__(self, other):
+        total = (self.hours  * 3600 + self.minutes * 60 + self.seconds + other.hours * 3600 + other.minutes * 60 + other.seconds)
+        print (f'{total // 3600}:{(total % 3600) // 60}:{total % 60}')
+        
+    def __sub__(self, other):
+        total = (self.hours * 3600 + self.minutes * 60 + self.seconds - (other.hours * 3600 + other.minutes * 60 + other.seconds))
+        sign = "-" if total < 0 else ""
+        t = abs(total)
+        h, m, s = t // 3600, (t % 3600) // 60, t % 60
+        print(f"{sign}{h}:{m}:{s}")        
+
+    def __str__(self):
+        return f'{self.hours}:{self.minutes}:{self.seconds}'
+        
+ 
+        
+class Car:
+    __last_model = None
+    __counter = None
+    
+    def __init__(self, model, counter):
+        self.model = model
+        Car.__last_model = model
+        Car.__counter = counter
+    
+    @classmethod
+    def get_last_model(cls):
+        return cls.__last_model
+
+    @classmethod
+    def get_counter(cls):
+        return cls.__counter
+
+    @staticmethod
+    def is_model_ok(count):
+        return count > 9
+
+car1 = Car('Sirroco', 8)
+countt = car1.get_counter()
+print(Car.is_model_ok(countt))
