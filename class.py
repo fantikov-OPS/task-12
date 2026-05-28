@@ -1,3 +1,5 @@
+import random 
+import string
 class Pet:
 
     def __init__(self, name, age, master, height, weight):
@@ -24,6 +26,11 @@ class Pet:
 
     def voise(self):
         pass
+
+    @staticmethod
+    def get_random_name():
+        charrates = string.ascii_letters
+        return f'{"".join(random.choices(charrates, k=1))}-{random.randint(10,99)}'
 
 
 class Dog(Pet):
@@ -75,6 +82,23 @@ class Parrot(Pet):
 
     def cnage_height(self, new_height=None):
         self.height = new_height if new_height else self.height + 0.5
+
+
+class Hourse(Pet):
+
+    def voise(self):
+        return 'Igogo'
+
+
+class Donkey(Pet):
+
+    def voise(self):
+        return print('Ia')
+
+
+class Mule(Donkey):
+    pass
+
 
 class MyTime():
     
@@ -132,6 +156,5 @@ class Car:
     def is_model_ok(count):
         return count > 9
 
-car1 = Car('Sirroco', 8)
-countt = car1.get_counter()
-print(Car.is_model_ok(countt))
+mule_1 = Mule(Pet.get_random_name(), 10, "Tolya", 12, 20)
+mule_1.voise()
