@@ -1,7 +1,7 @@
 import random 
 import string
-from datetime import date
-from abc import ABC
+
+from abc import ABC, abstractmethod
 
 class Pet(ABC):
 
@@ -234,7 +234,14 @@ class Book:
         return (f'{self.author} - год.{self.year} - стр.{self.page} - цена.{self.price}')
 
 class Animal(ABC):
-    pass
+
+    @abstractmethod
+    def feline(self):
+        raise NotImplemented
+    
+    @abstractmethod
+    def canine(self):
+        raise NotImplemented
 
 
 class Pet(Animal):
@@ -242,7 +249,12 @@ class Pet(Animal):
 
 
 class Cat(Pet):
-    pass
+    
+    def feline(self):
+        return True
+    
+    def canine(self):
+        return False
 
 
 class Dog(Pet):
@@ -263,4 +275,5 @@ class Wolf(WildAnimal):
 
 
 if __name__ == '__main__':
-    book1=Book(1995, 50, 'Koya', 1)
+    cat1=Cat()
+    print(cat1.canine())
