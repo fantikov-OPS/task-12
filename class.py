@@ -1,7 +1,9 @@
 import random 
 import string
 from datetime import date
-class Pet:
+from abc import ABC
+
+class Pet(ABC):
 
     def __init__(self, name, age, master, height, weight):
         self.name = name
@@ -230,6 +232,35 @@ class Book:
 
     def __str__(self):
         return (f'{self.author} - год.{self.year} - стр.{self.page} - цена.{self.price}')
+
+class Animal(ABC):
+    pass
+
+
+class Pet(Animal):
+    pass
+
+
+class Cat(Pet):
+    pass
+
+
+class Dog(Pet):
+    pass
+
+
+class WildAnimal(Animal):
+    pass
+
+
+class Lios(WildAnimal):
+    pass
+
+
+class Wolf(WildAnimal):
+    pass
+
+
 
 if __name__ == '__main__':
     book1=Book(1995, 50, 'Koya', 1)
