@@ -1,5 +1,6 @@
 import random 
 import string
+from datetime import date
 class Pet:
 
     def __init__(self, name, age, master, height, weight):
@@ -156,5 +157,79 @@ class Car:
     def is_model_ok(count):
         return count > 9
 
-mule_1 = Mule(Pet.get_random_name(), 10, "Tolya", 12, 20)
-mule_1.voise()
+class MyExc(Exception):
+    def __init__(self, message = 'Somth Error'):
+        super().__init__(message)
+
+
+class BookError(Exception):
+    pass
+
+
+class BookValidationsErrors(BookError):
+    pass
+
+
+class InvalidPages(BookValidationsErrors):
+    pass
+
+
+class InvalidYears(BookValidationsErrors):
+    pass
+
+
+class InvalidAuthor(BookValidationsErrors):
+    pass
+
+
+class InavlidPrice(BookValidationsErrors):
+    pass
+
+class Book:
+
+    def __init__(self, year, price, author, page):
+        self.price = self.validate_price(price)
+        self.year = self.validete_year(year)
+        self.page = self.validate_page(page)
+        self.author = self.validate_author(author)
+
+    @staticmethod
+    def validate_author(author):
+        if not isinstance(author, str):
+            raise InvalidAuthor('Автор должен быть строкой')
+        if not author.strip():
+            raise InvalidAuthor('Строка не должна быть пустой')
+        if len(author) > 10:
+            raise InvalidAuthor('Имя не может быть больше 10 символов')
+        return author
+
+    @staticmethod
+    def validate_page(page):
+        if not isinstance(page, int) or isinstance(page, bool):
+            raise InvalidPages('Колличество страниц должно быть числом')
+        if page <= 0:
+            raise InvalidPages('Колличество страниц должно быть больще 0')
+        return page
+
+    @staticmethod
+    def validate_price(price):
+        if not isinstance(price , (int, float)) or isinstance(price, bool):
+            raise InavlidPrice('Цена должна быть числом')
+        if price < 0:
+            raise InavlidPrice('Цена должна быть больще 0')
+        return float(price)
+
+    @staticmethod
+    def validete_year(year):
+        if not isinstance(year, int) or isinstance(year, bool):
+            raise InvalidYears('Год должен быть числом')
+        current_year = date.today().year
+        if year < 0 or year > current_year:
+            raise InvalidYears(f'Год должен быть от 0 до {current_year}')
+        return year
+
+    def __str__(self):
+        return (f'{self.author} - год.{self.year} - стр.{self.page} - цена.{self.price}')
+
+if __name__ == '__main__':
+    book1=Book(1995, 50, 'Koya', 1)
