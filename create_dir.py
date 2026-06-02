@@ -1,13 +1,26 @@
 import argparse
 import os
 
+PY_TEMPLATE = """def main():
+    pass
+
+if __name__ == '__main__':
+    main()
+"""
+
 
 def create_folder_and_file(folder_name: str, file_name: str) -> tuple[str, str]:
     script_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(script_dir, folder_name)
     os.mkdir(folder_path)
     file_path = os.path.join(folder_path, file_name)
-    open(file_path, 'a', encoding='utf-8').close()
+
+    if os.path.splitext(file_name)[1].lower() == '.py':
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(PY_TEMPLATE)
+    else:
+        open(file_path, 'a', encoding='utf-8').close()
+
     return folder_path, file_path
 
 
