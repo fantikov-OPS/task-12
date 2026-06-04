@@ -5,10 +5,8 @@ from sqlalchemy import create_engine, text
 e = create_engine("sqlite:///test.sqlite")
 
 with e.begin() as conn:
-    conn.execute(text("""
-                    create table user (
-                    id integer primary key autoincrement,
-                    firstname varchar,
-                    lastname varchar
-                    )
+    res=conn.execute(text("""
+insert into user (firstname, lastname)
+values ('Alex3', 'Varkalov')
                       """))
+    conn.rollback()
