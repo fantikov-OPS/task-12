@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Обратная связь</title>
+</head>
+<body>
+    <h1>Форма обратной связи</h1>
+
+    <form action="#" method="post">
+        <p>
+            <label for="firstname">Имя:</label><br>
+            <input type="text" id="firstname" name="firstname" required>
+        </p>
+
+        <p>
+            <label for="lastname">Фамилия:</label><br>
+            <input type="text" id="lastname" name="lastname" required>
+        </p>
+
+        <p>
+            <label for="patronymic">Отчество:</label><br>
+            <input type="text" id="patronymic" name="patronymic">
+        </p>
+
+        <p>
+            <label for="age">Возраст:</label><br>
+            <input type="number" id="age" name="age" min="1" max="120" required>
+        </p>
+
+        <p>
+            <label for="comment">Комментарий:</label><br>
+            <textarea id="comment" name="comment" rows="5" cols="40" required></textarea>
+        </p>
+
+        <p>
+            <button type="submit">Отправить</button>
+        </p>
+    </form>
+</body>
+</html>
