@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, relationship, Session
 from sqlalchemy_utils import create_database, database_exists
 
@@ -35,6 +35,15 @@ class Student(Base):
     group = relationship("Group", back_populates="students")
 
 
+class Diary(Base):
+    __tablename__ = "diary"
+
+    id = Column(Integer, primary_key=True)
+    average_grade = Column(Float, nullable=False, default=0.0)
+    student_id = Column(Integer, ForeignKey("student.id"), nullable=False, unique=True)
+    student = relationship("Student", backref="diary")
+
+
 Base.metadata.create_all(engine)
 
 groups = [
@@ -51,7 +60,18 @@ students = [
     Student(firstname="Ольга", lastname="Новикова", group=groups[1]),
 ]
 
+#with Session(engine) as session:
+#    session.add_all(groups)
+#    session.add_all(students)
+#    session.commit()
+
+grades = [4.2, 3.8, 4.5, 4.9, 3.5, 4.0]
+
 with Session(engine) as session:
-    session.add_all(groups)
-    session.add_all(students)
+    all_students = session.query(Student).all()
+    for student, grade in zip(all_students, grades):
+        if student.diary is None:
+            session.add(Diary(average_grade=grade, student=student))
+        else:
+            student.diary.average_grade = grade
     session.commit()
