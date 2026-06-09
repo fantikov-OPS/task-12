@@ -72,6 +72,7 @@ students = [
     Student(firstname="Иван", lastname="Иванов", group=groups[0]),
     Student(firstname="Пётр", lastname="Петров", group=groups[0]),
     Student(firstname="Сергей", lastname="Сидоров", group=groups[0]),
+    Student(firstname="Александр", lastname="Пушкин", group=groups[0]),
     Student(firstname="Анна", lastname="Смирнова", group=groups[1]),
     Student(firstname="Мария", lastname="Козлова", group=groups[1]),
     Student(firstname="Ольга", lastname="Новикова", group=groups[1]),
@@ -102,13 +103,27 @@ books_data = [
 ]
 
 with Session(engine) as session:
-    books = session.query(Book).all()
-    if not books:
-        books = [Book(title=title, pages=pages) for title, pages in books_data]
-        session.add_all(books)
+    if not session.query(Student).filter_by(firstname="Александр").first():
+        group = session.query(Group).first()
+        session.add(Student(firstname="Александр", lastname="Пушкин", group=group))
         session.flush()
 
-    all_students = session.query(Student).all()
-    for student in all_students:
-        student.books = books
+    new_book = session.query(Book).filter_by(title="Идиот").first()
+    if not new_book:
+        new_book = Book(title="Идиот", pages=640)
+        session.add(new_book)
+        session.flush()
+
+    groups_with_alexandr = (
+        session.query(Group)
+        .join(Student)
+        .filter(Student.firstname == "Александр")
+        .distinct()
+        .all()
+    )
+
+    for group in groups_with_alexandr:
+        for student in group.students:
+            if new_book not in student.books:
+                student.books.append(new_book)
     session.commit()
