@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Table, create_engine
 from sqlalchemy.orm import declarative_base, relationship, Session
 from sqlalchemy_utils import create_database, database_exists
 
@@ -15,6 +15,13 @@ if not database_exists(engine.url):
     create_database(engine.url)
 
 Base = declarative_base()
+
+student_book = Table(
+    "student_book",
+    Base.metadata,
+    Column("student_id", Integer, ForeignKey("student.id"), primary_key=True),
+    Column("book_id", Integer, ForeignKey("book.id"), primary_key=True),
+)
 
 
 class Group(Base):
@@ -33,6 +40,7 @@ class Student(Base):
     lastname = Column(String, nullable=False)
     group_id = Column(Integer, ForeignKey("study_group.id"), nullable=False)
     group = relationship("Group", back_populates="students")
+    books = relationship("Book", secondary=student_book, back_populates="students")
 
 
 class Diary(Base):
@@ -42,6 +50,15 @@ class Diary(Base):
     average_grade = Column(Float, nullable=False, default=0.0)
     student_id = Column(Integer, ForeignKey("student.id"), nullable=False, unique=True)
     student = relationship("Student", backref="diary")
+
+
+class Book(Base):
+    __tablename__ = "book"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    pages = Column(Integer, nullable=False)
+    students = relationship("Student", secondary=student_book, back_populates="books")
 
 
 Base.metadata.create_all(engine)
@@ -74,4 +91,24 @@ with Session(engine) as session:
             session.add(Diary(average_grade=grade, student=student))
         else:
             student.diary.average_grade = grade
+    session.commit()
+
+books_data = [
+    ("Война и мир", 1225),
+    ("Преступление и наказание", 671),
+    ("Мастер и Маргарита", 480),
+    ("Евгений Онегин", 224),
+    ("Отцы и дети", 256),
+]
+
+with Session(engine) as session:
+    books = session.query(Book).all()
+    if not books:
+        books = [Book(title=title, pages=pages) for title, pages in books_data]
+        session.add_all(books)
+        session.flush()
+
+    all_students = session.query(Student).all()
+    for student in all_students:
+        student.books = books
     session.commit()
